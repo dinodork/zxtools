@@ -15,9 +15,6 @@ template <class Extents> class ZXSpectrumLayout::mapping {
 public:
   using extents_type = Extents;
   using index_type = typename extents_type::index_type;
-  using size_type = typename extents_type::size_type;
-  using rank_type = typename extents_type::rank_type;
-  using layout_type = ZXSpectrumLayout;
 
   // The framework forces the mapping to be constructible from the extents
   // type, but we really don't have a need for that.
