@@ -9,7 +9,7 @@
 #include <vector>
 
 using namespace std;
-using namespace Kokkos;
+using namespace zx_graphics;
 
 using Bitmap_mem = uint8_t[32 * 24 * 8];
 using Attr_mem = uint8_t[24][32];
@@ -56,11 +56,11 @@ constexpr uint16_t get_byte_address(size_t x_byte, size_t y_pixel) {
   return byte_offset;
 }
 
-void plot(BitmapMemMDSpan &mdmem, size_t x, size_t y) {
+void plot(BitmapMem &mdmem, size_t x, size_t y) {
   mdmem(x >> 3, y) |= 0x80 >> (x & 7);
 }
 
-void draw(BitmapMemMDSpan &mdmem, size_t x_start, size_t y_start, size_t x_end,
+void draw(BitmapMem &mdmem, size_t x_start, size_t y_start, size_t x_end,
           size_t y_end) {
   if (x_end == x_start)
     for (auto y = y_start; y < y_end; ++y)
@@ -70,8 +70,8 @@ void draw(BitmapMemMDSpan &mdmem, size_t x_start, size_t y_start, size_t x_end,
       plot(mdmem, x, y_start);
 }
 
-void writeLetterBig(BitmapMemMDSpan &mdmem, span<uint8_t, 8> character,
-                    size_t col, size_t row, Attr_mem &attr_mem) {
+void writeLetterBig(BitmapMem &mdmem, span<uint8_t, 8> character, size_t col,
+                    size_t row, Attr_mem &attr_mem) {
 
   for (size_t i = 0; i < sizeof(character); ++i) {
     for (auto j = 0; j < 8; ++j) {
@@ -124,7 +124,7 @@ int main() {
   Bitmap_mem bitmap_mem;
   Attr_mem attr_mem;
 
-  auto bitmap_mem_mdspan = BitmapMemMDSpan(bitmap_mem);
+  auto bitmap_mem_mdspan = BitmapMem(bitmap_mem);
 
   for (auto &b : bitmap_mem)
     b = 0x00;

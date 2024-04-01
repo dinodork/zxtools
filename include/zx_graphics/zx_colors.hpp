@@ -2,6 +2,8 @@
 
 #include <cstdint>
 
+namespace zx_graphics {
+
 using Byte = std::uint8_t;
 
 enum class Ink {
@@ -35,3 +37,5 @@ const Byte PAPER_WHITE = PAPER_GREEN | PAPER_RED | PAPER_BLUE;
 
 const Byte BRIGHT = 1 << 6;
 const Byte FLASH = 1 << 7;
+
+} // namespace zx_graphics

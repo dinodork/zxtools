@@ -1,4 +1,8 @@
+#pragma once
+
 #include <iostream>
+
+namespace zx_graphics {
 
 struct ZXSpectrumLayout {
   template <class Extents> class mapping;
@@ -35,5 +39,7 @@ public:
   }
 };
 
-using BitmapMemMDSpan =
+using BitmapMem =
     Kokkos::mdspan<std::uint8_t, ZXSpectrumScreen, ZXSpectrumLayout>;
+
+} // namespace zx_graphics
