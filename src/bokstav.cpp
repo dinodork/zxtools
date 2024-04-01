@@ -56,46 +56,47 @@ constexpr uint16_t get_byte_address(size_t x_byte, size_t y_pixel) {
   return byte_offset;
 }
 
-void plot(BitmapMemMDSpan &mdmem, size_t x, size_t y, Bitmap_mem &mem) {
+void plot(BitmapMemMDSpan &mdmem, size_t x, size_t y) {
   mdmem(x >> 3, y) |= 0x80 >> (x & 7);
 }
 
 void draw(BitmapMemMDSpan &mdmem, size_t x_start, size_t y_start, size_t x_end,
-          size_t y_end, Bitmap_mem &mem) {
+          size_t y_end) {
   if (x_end == x_start)
     for (auto y = y_start; y < y_end; ++y)
-      plot(mdmem, x_start, y, mem);
+      plot(mdmem, x_start, y);
   if (y_end == y_start)
     for (auto x = x_start; x < x_end; ++x)
-      plot(mdmem, x, y_start, mem);
+      plot(mdmem, x, y_start);
 }
 
-void writeLetterBig(BitmapMemMDSpan &mdmem, span<uint8_t, 8> c, size_t col,
-                    size_t row, Bitmap_mem &bitmap_mem, Attr_mem &attr_mem) {
+void writeLetterBig(BitmapMemMDSpan &mdmem, span<uint8_t, 8> character,
+                    size_t col, size_t row, Attr_mem &attr_mem) {
 
-  for (int i = 0; i < sizeof(c); ++i) {
+  for (size_t i = 0; i < sizeof(character); ++i) {
     for (auto j = 0; j < 8; ++j) {
       auto icol = col + j;
       auto irow = row + i;
       auto mask = 0x80 >> j;
-      uint16_t pixel_row = c[i] << j;
+      uint16_t pixel_row = character[i] << j;
       if (pixel_row & 0x80) {
         attr_mem[irow][icol] = BRIGHT | PAPER_MAGENTA | (int)Ink::CYAN;
-        if (i == 0 || !(c[i - 1] & mask)) { // nothing above
+        if (i == 0 || !(character[i - 1] & mask)) { // nothing above
           auto x = icol * 8, y = irow * 8 - 1;
-          draw(mdmem, x, y, x + 8, y, bitmap_mem);
+          draw(mdmem, x, y, x + 8, y);
         }
         if (!(pixel_row & 0x40)) { // nothing to the right
           auto x = (icol + 1) * 8, y = irow * 8;
-          draw(mdmem, x, y, x, y + 8, bitmap_mem);
+          draw(mdmem, x, y, x, y + 8);
         }
-        if (i == sizeof(c) || !(c[i + 1] & mask)) { // nothing below
+        if (i == sizeof(character) ||
+            !(character[i + 1] & mask)) { // nothing below
           auto x = icol * 8, y = (irow + 1) * 8;
-          draw(mdmem, x, y, x + 8, y, bitmap_mem);
+          draw(mdmem, x, y, x + 8, y);
         }
         if (!(pixel_row & 0x100)) { // nothing_to_the_left
           auto x = icol * 8 - 1, y = irow * 8;
-          draw(mdmem, x, y, x, y + 8, bitmap_mem);
+          draw(mdmem, x, y, x, y + 8);
         }
       }
     }
@@ -136,7 +137,7 @@ int main() {
   int col = 0;
   for (auto c : s) {
     auto character = span<uint8_t, 8>(font + (c - 32) * 8, 8);
-    writeLetterBig(bitmap_mem_mdspan, character, col, 10, bitmap_mem, attr_mem);
+    writeLetterBig(bitmap_mem_mdspan, character, col, 10, attr_mem);
     col += 6;
   }
 
