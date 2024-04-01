@@ -35,26 +35,7 @@ Byte gradient[] = {
     0b11111111, //
 };
 
-Character char_a = {
-    0b00000000, //
-    0b00000000, //
-    0b00111000, //
-    0b00000100, //
-    0b00111100, //
-    0b01000100, //
-    0b00111100, //
-    0b00000000,
-};
-
 uint8_t font[767];
-
-constexpr uint16_t get_byte_address(size_t x_byte, size_t y_pixel) {
-  uint16_t byte_offset = x_byte;
-  byte_offset |= (y_pixel & 0x07) << 8;
-  byte_offset |= (y_pixel & 0X38) << 2;
-  byte_offset |= (y_pixel & 0xC0) << 5;
-  return byte_offset;
-}
 
 void plot(BitmapMem &mdmem, size_t x, size_t y) {
   mdmem(x >> 3, y) |= 0x80 >> (x & 7);
