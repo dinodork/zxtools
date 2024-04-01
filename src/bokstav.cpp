@@ -38,7 +38,11 @@ Byte gradient[] = {
 uint8_t font[767];
 
 void plot(BitmapMem &mdmem, size_t x, size_t y) {
+#if MDSPAN_USE_BRACKET_OPERATOR
+  mdmem[x >> 3, y] |= 0x80 >> (x & 7);
+#else
   mdmem(x >> 3, y) |= 0x80 >> (x & 7);
+#endif
 }
 
 void draw(BitmapMem &mdmem, size_t x_start, size_t y_start, size_t x_end,
