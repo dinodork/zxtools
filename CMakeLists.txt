@@ -1,5 +1,6 @@
-project(ZXTools)
 cmake_minimum_required(VERSION 3.22)
+
+project(ZXTools)
 
 option(KOKKOS_MDPSAN_HOME "Path to Kokkos mdspan")
 
